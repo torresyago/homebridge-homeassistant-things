@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-04-01
+
+### Changed
+- Homebridge v2 compatibility: replaced `.on('get')`/`.on('set')` with `.onGet()`/`.onSet()` API
+- Replaced deprecated `request` library with native `fetch` (Node.js 18+ built-in) — no external dependencies
+- Updated `engines` to `"^1.6.0 || ^2.0.0-beta.0"` and added `node` requirements
+
 ## [1.0.1] - 2026-04-01
 
 ### Changed
