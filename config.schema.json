@@ -46,6 +46,36 @@
         "type": "integer",
         "default": 30,
         "minimum": 5
+      },
+      "openingTime": {
+        "title": "Opening Time (seconds)",
+        "type": "integer",
+        "default": 15,
+        "minimum": 1,
+        "description": "How long the door takes to fully open",
+        "condition": {
+          "functionBody": "return model.deviceType === 'garageDoor'"
+        }
+      },
+      "closingTime": {
+        "title": "Closing Time (seconds)",
+        "type": "integer",
+        "default": 15,
+        "minimum": 1,
+        "description": "How long the door takes to fully close",
+        "condition": {
+          "functionBody": "return model.deviceType === 'garageDoor'"
+        }
+      },
+      "pulseTime": {
+        "title": "Relay Pulse Duration (ms)",
+        "type": "integer",
+        "default": 2000,
+        "minimum": 100,
+        "description": "How long the relay stays on (in milliseconds)",
+        "condition": {
+          "functionBody": "return model.deviceType === 'garageDoor'"
+        }
       }
     }
   }

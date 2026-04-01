@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2026-04-01
+
+### Changed
+- Garage door: replaced fake-closed logic with real timed animation (OPENING → OPEN, CLOSING → CLOSED)
+- Garage door: new config fields `openingTime` (s), `closingTime` (s), `pulseTime` (ms)
+- Garage door: state managed internally by timer, no HA polling needed
+
 ## [1.0.0] - 2026-04-01
 
 ### Added
