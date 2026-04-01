@@ -10,6 +10,14 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [1.1.4] - 2026-04-01
+
+### Fixed / Corregido
+- **EN** Added Node.js 24 to supported engines (`^24`). Previously the plugin rejected Node.js v24.x with an incompatibility warning.
+- **ES** Añadido Node.js 24 a los engines soportados (`^24`). Anteriormente el plugin rechazaba Node.js v24.x con un aviso de incompatibilidad.
+
+---
+
 ## [1.1.3] - 2026-04-01
 
 ### Fixed / Corregido
