@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-04-01
+
+### Fixed
+- Added `repository`, `bugs` and `homepage` fields to `package.json` so Homebridge Config UI X can display the changelog and release notes correctly
+
 ## [1.1.0] - 2026-04-01
 
 ### Changed
