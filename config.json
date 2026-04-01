@@ -1,0 +1,9 @@
+{
+  "accessory": "HomeAssistantThing",
+  "name": "Living Room Light",
+  "deviceType": "switch",
+  "haUrl": "http://homeassistant.local:8123",
+  "haToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "entityId": "light.living_room",
+  "pollInterval": 30
+}

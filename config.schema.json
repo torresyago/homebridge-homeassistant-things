@@ -1,0 +1,52 @@
+{
+  "pluginAlias": "HomeAssistantThing",
+  "pluginType": "accessory",
+  "singular": false,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "required": true,
+        "default": "My Device"
+      },
+      "deviceType": {
+        "title": "Device Type",
+        "type": "string",
+        "required": true,
+        "default": "switch",
+        "oneOf": [
+          { "title": "Switch / Light", "enum": ["switch"] },
+          { "title": "Thermostat (climate entity)", "enum": ["thermostat"] },
+          { "title": "Blind / Shutter (cover entity)", "enum": ["blind"] },
+          { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] }
+        ]
+      },
+      "haUrl": {
+        "title": "Home Assistant URL",
+        "type": "string",
+        "required": true,
+        "placeholder": "http://homeassistant.local:8123"
+      },
+      "entityId": {
+        "title": "Entity ID",
+        "type": "string",
+        "required": true,
+        "description": "switch.salon · light.bedroom · climate.salon · cover.persiana · switch.relay",
+        "placeholder": "switch.salon"
+      },
+      "haToken": {
+        "title": "Long-Lived Access Token",
+        "type": "string",
+        "required": true
+      },
+      "pollInterval": {
+        "title": "Poll Interval (seconds)",
+        "type": "integer",
+        "default": 30,
+        "minimum": 5
+      }
+    }
+  }
+}
