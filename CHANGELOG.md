@@ -10,6 +10,14 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.1.3] - 2026-04-02
+
+### Changed / Cambios
+- **EN** Updated publish workflow to use npm token — author now shows correctly as @yagotorres in Homebridge plugin catalogue.
+- **ES** Actualizado el workflow de publicación para usar token npm — el autor ahora aparece correctamente como @yagotorres en el catálogo de plugins de Homebridge.
+
+---
+
 ## [2.1.2] - 2026-04-02
 
 ### Changed / Cambios
