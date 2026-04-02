@@ -10,6 +10,14 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.1.0] - 2026-04-02
+
+### Added / Añadido
+- **EN** New `deviceType: "sensor"` — exposes any numeric Home Assistant sensor (e.g. power in W, energy in kWh) as a HomeKit Light Sensor (`CurrentAmbientLightLevel`). Supports read-only polling. Useful for electricity consumption and solar production monitoring.
+- **ES** Nuevo `deviceType: "sensor"` — expone cualquier sensor numérico de Home Assistant (p.ej. potencia en W, energía en kWh) como sensor de luz HomeKit (`CurrentAmbientLightLevel`). Solo lectura con polling configurable. Útil para monitorización de consumo eléctrico y producción solar.
+
+---
+
 ## [2.0.1] - 2026-04-02
 
 ### Added / Añadido

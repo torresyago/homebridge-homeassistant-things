@@ -32,7 +32,8 @@
                 { "title": "Switch / Light", "enum": ["switch"] },
                 { "title": "Thermostat (climate entity)", "enum": ["thermostat"] },
                 { "title": "Blind / Shutter (cover entity)", "enum": ["blind"] },
-                { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] }
+                { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] },
+                { "title": "Sensor (read-only numeric, e.g. power/energy)", "enum": ["sensor"] }
               ]
             },
             "haUrl": {

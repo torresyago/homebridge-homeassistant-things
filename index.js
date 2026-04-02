@@ -113,6 +113,7 @@ class ThingHandler {
       case 'thermostat': this._setupThermostat(); break;
       case 'blind':      this._setupBlind();      break;
       case 'garageDoor': this._setupGarageDoor(); break;
+      case 'sensor':     this._setupSensor();     break;
       default:           this._setupSwitch();
     }
   }
@@ -278,10 +279,24 @@ class ThingHandler {
     }
   }
 
+  // ─── SENSOR (read-only numeric, e.g. power/energy) ───────────────────────
+
+  _setupSensor() {
+    const { Service, Characteristic } = this.hap;
+    this.state.value = 0.0001; // LightSensor minimum
+
+    this.service = this.accessory.getService(Service.LightSensor)
+      || this.accessory.addService(Service.LightSensor, this.name);
+
+    this.service.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
+      .onGet(() => Math.max(0.0001, this.state.value));
+  }
+
   // ─── POLLING & STATE SYNC ─────────────────────────────────────────────────
 
   async _pollHA() {
     if (this.deviceType === 'garageDoor') return;
+    if (this.deviceType === 'sensor') { await this._pollSensor(); return; }
 
     try {
       const res = await fetch(`${this.haUrl}/api/states/${this.entityId}`, {
@@ -351,6 +366,28 @@ class ThingHandler {
         this.log.debug(`[${this.name}] Poll: blind = ${state} | pos:${curPos}%`);
         break;
       }
+    }
+  }
+
+  async _pollSensor() {
+    const { Characteristic } = this.hap;
+    try {
+      const res = await fetch(`${this.haUrl}/api/states/${this.entityId}`, {
+        headers: {
+          'Authorization': `Bearer ${this.haToken}`,
+          'Content-Type':  'application/json',
+        },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!res.ok) { this.log.error(`[${this.name}] Poll error: ${res.status}`); return; }
+      const data  = await res.json();
+      const raw   = parseFloat(data.state);
+      const value = isNaN(raw) ? this.state.value : Math.max(0.0001, raw);
+      this.state.value = value;
+      this.service.updateCharacteristic(Characteristic.CurrentAmbientLightLevel, value);
+      this.log.debug(`[${this.name}] Poll: sensor = ${value} (${data.attributes?.unit_of_measurement ?? ''})`);
+    } catch (e) {
+      this.log.error(`[${this.name}] Poll error: ${e.message}`);
     }
   }
 
