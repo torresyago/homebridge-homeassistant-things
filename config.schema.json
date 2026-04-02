@@ -1,76 +1,92 @@
 {
   "pluginAlias": "HomeAssistantThing",
-  "pluginType": "accessory",
-  "singular": false,
+  "pluginType": "platform",
+  "singular": true,
   "schema": {
     "type": "object",
-    "required": ["name", "deviceType", "haUrl", "entityId", "haToken"],
     "properties": {
       "name": {
-        "title": "Name",
+        "title": "Platform Name",
         "type": "string",
-        "default": "My Device"
+        "default": "HA Things"
       },
-      "deviceType": {
-        "title": "Device Type",
-        "type": "string",
-        "default": "switch",
-        "oneOf": [
-          { "title": "Switch / Light", "enum": ["switch"] },
-          { "title": "Thermostat (climate entity)", "enum": ["thermostat"] },
-          { "title": "Blind / Shutter (cover entity)", "enum": ["blind"] },
-          { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] }
-        ]
-      },
-      "haUrl": {
-        "title": "Home Assistant URL",
-        "type": "string",
-        "placeholder": "http://homeassistant.local:8123"
-      },
-      "entityId": {
-        "title": "Entity ID",
-        "type": "string",
-        "description": "switch.salon · light.bedroom · climate.salon · cover.persiana · switch.relay",
-        "placeholder": "switch.salon"
-      },
-      "haToken": {
-        "title": "Long-Lived Access Token",
-        "type": "string"
-      },
-      "pollInterval": {
-        "title": "Poll Interval (seconds)",
-        "type": "integer",
-        "default": 30,
-        "minimum": 5
-      },
-      "openingTime": {
-        "title": "Opening Time (seconds)",
-        "type": "integer",
-        "default": 15,
-        "minimum": 1,
-        "description": "How long the door takes to fully open",
-        "condition": {
-          "functionBody": "return model.deviceType === 'garageDoor'"
-        }
-      },
-      "closingTime": {
-        "title": "Closing Time (seconds)",
-        "type": "integer",
-        "default": 15,
-        "minimum": 1,
-        "description": "How long the door takes to fully close",
-        "condition": {
-          "functionBody": "return model.deviceType === 'garageDoor'"
-        }
-      },
-      "pulseTime": {
-        "title": "Relay Pulse Duration (ms)",
-        "type": "integer",
-        "default": 2000,
-        "minimum": 100,
-        "description": "How long the relay stays on (in milliseconds)",
-        "condition": {
-          "functionBody": "return model.deviceType === 'garageDoor'"
+      "devices": {
+        "title": "Devices",
+        "type": "array",
+        "items": {
+          "title": "Device",
+          "type": "object",
+          "required": ["name", "deviceType", "haUrl", "entityId", "haToken"],
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "default": "My Device",
+              "description": "Display name in the Home app"
+            },
+            "deviceType": {
+              "title": "Device Type",
+              "type": "string",
+              "default": "switch",
+              "oneOf": [
+                { "title": "Switch / Light", "enum": ["switch"] },
+                { "title": "Thermostat (climate entity)", "enum": ["thermostat"] },
+                { "title": "Blind / Shutter (cover entity)", "enum": ["blind"] },
+                { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] }
+              ]
+            },
+            "haUrl": {
+              "title": "Home Assistant URL",
+              "type": "string",
+              "placeholder": "http://homeassistant.local:8123"
+            },
+            "entityId": {
+              "title": "Entity ID",
+              "type": "string",
+              "description": "switch.salon · light.bedroom · climate.salon · cover.persiana · switch.relay",
+              "placeholder": "switch.salon"
+            },
+            "haToken": {
+              "title": "Long-Lived Access Token",
+              "type": "string"
+            },
+            "pollInterval": {
+              "title": "Poll Interval (seconds)",
+              "type": "integer",
+              "default": 30,
+              "minimum": 5
+            },
+            "openingTime": {
+              "title": "Opening Time (seconds)",
+              "type": "integer",
+              "default": 15,
+              "minimum": 1,
+              "description": "How long the door takes to fully open",
+              "condition": {
+                "functionBody": "return model.deviceType === 'garageDoor'"
+              }
+            },
+            "closingTime": {
+              "title": "Closing Time (seconds)",
+              "type": "integer",
+              "default": 15,
+              "minimum": 1,
+              "description": "How long the door takes to fully close",
+              "condition": {
+                "functionBody": "return model.deviceType === 'garageDoor'"
+              }
+            },
+            "pulseTime": {
+              "title": "Relay Pulse Duration (ms)",
+              "type": "integer",
+              "default": 2000,
+              "minimum": 100,
+              "description": "How long the relay stays on (in milliseconds)",
+              "condition": {
+                "functionBody": "return model.deviceType === 'garageDoor'"
+              }
+            }
+          }
         }
       }
     }

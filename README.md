@@ -7,6 +7,66 @@ Homebridge plugin to control Home Assistant devices as native HomeKit accessorie
 
 ---
 
+## Migrating from v1.x / Migración desde v1.x
+
+From v2.0.0 the plugin is a **dynamic platform**. Move your config from `accessories` to `platforms`.
+
+Desde v2.0.0 el plugin es una **dynamic platform**. Mueve la config del bloque `accessories` a `platforms`.
+
+**Before / Antes:**
+```json
+"accessories": [
+  {
+    "accessory": "HomeAssistantThing",
+    "name": "Living Room Light",
+    "deviceType": "switch",
+    "haUrl": "http://homeassistant.local:8123",
+    "haToken": "YOUR_TOKEN",
+    "entityId": "light.living_room"
+  },
+  {
+    "accessory": "HomeAssistantThing",
+    "name": "Living Room Blind",
+    "deviceType": "blind",
+    "haUrl": "http://homeassistant.local:8123",
+    "haToken": "YOUR_TOKEN",
+    "entityId": "cover.living_room_blind"
+  }
+]
+```
+
+**After / Después:**
+```json
+"platforms": [
+  {
+    "platform": "HomeAssistantThing",
+    "name": "HA Things",
+    "devices": [
+      {
+        "name": "Living Room Light",
+        "deviceType": "switch",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "YOUR_TOKEN",
+        "entityId": "light.living_room"
+      },
+      {
+        "name": "Living Room Blind",
+        "deviceType": "blind",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "YOUR_TOKEN",
+        "entityId": "cover.living_room_blind"
+      }
+    ]
+  }
+]
+```
+
+> **Note:** If you update without changing your config, the plugin will continue to work and log a warning asking you to migrate.
+>
+> **Nota:** Si actualizas sin cambiar la config, el plugin seguirá funcionando y mostrará un aviso en el log pidiendo que migres.
+
+---
+
 ## English
 
 ### Supported device types
