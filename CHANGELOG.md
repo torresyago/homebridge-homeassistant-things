@@ -10,6 +10,16 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.2.0] - 2026-04-02
+
+### Added / Añadido
+- **EN** New `deviceType: "pulse"` — momentary switch: sends `turn_on` to HA then auto `turn_off` after `pulseTime` ms. Useful for doorbells, relay pulses, etc.
+- **EN** New `deviceType: "button"` — stateless programmable switch: triggers HomeKit automations on press. No HA state sync needed.
+- **ES** Nuevo `deviceType: "pulse"` — pulsador momentáneo: envía `turn_on` a HA y luego `turn_off` automáticamente tras `pulseTime` ms. Útil para timbres, relés de pulso, etc.
+- **ES** Nuevo `deviceType: "button"` — botón sin estado: dispara automatizaciones HomeKit al pulsar. Sin sincronización de estado con HA.
+
+---
+
 ## [2.1.3] - 2026-04-02
 
 ### Changed / Cambios

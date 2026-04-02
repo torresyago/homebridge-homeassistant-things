@@ -83,6 +83,8 @@ Desde v2.0.0 el plugin es una **dynamic platform**. Mueve la config del bloque `
 | `blind`       | Window Covering    | `cover`          | Bidirectional |
 | `garageDoor`  | Garage Door Opener | `switch` (pulse relay) | One-way |
 | `sensor`      | Light Sensor       | `sensor` (any numeric) | Read-only |
+| `pulse`       | Switch (momentary) | `switch` (pulse relay) | One-way |
+| `button`      | Stateless Switch   | any (no state needed)  | One-way |
 
 ### Features
 
@@ -92,6 +94,8 @@ Desde v2.0.0 el plugin es una **dynamic platform**. Mueve la config del bloque `
 - Blind: open/close/stop, position 0–100%, moving state
 - Garage door: pulse relay logic (turn_on → 2s → turn_off)
 - Sensor: read-only numeric values (power, energy, temperature, etc.) — usable in HomeKit automations
+- Pulse: momentary switch — sends `turn_on` then auto `turn_off` after `pulseTime` ms. Useful for doorbells, relay pulses, etc.
+- Button: stateless programmable switch — triggers HomeKit automations on press. No state, no HA entity needed.
 - Config UI X form — no manual JSON editing required
 
 ### Installation
@@ -157,6 +161,21 @@ Full example with all device types:
         "pulseTime": 2000
       },
       {
+        "name": "Doorbell Relay",
+        "deviceType": "pulse",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "switch.doorbell_relay",
+        "pulseTime": 500
+      },
+      {
+        "name": "Scene Button",
+        "deviceType": "button",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "input_boolean.dummy"
+      },
+      {
         "name": "Power Consumption",
         "deviceType": "sensor",
         "haUrl": "http://homeassistant.local:8123",
@@ -213,6 +232,8 @@ Scheduling is not a HomeKit accessory feature — it must be configured through 
 | `blind`       | Persiana           | `cover`            | Bidireccional |
 | `garageDoor`  | Puerta de Garaje   | `switch` (relé pulso) | Unidireccional |
 | `sensor`      | Sensor de Luz      | `sensor` (cualquier numérico) | Solo lectura |
+| `pulse`       | Interruptor (momentáneo) | `switch` (relé de pulso) | Unidireccional |
+| `button`      | Interruptor sin estado | cualquiera (sin estado)  | Unidireccional |
 
 ### Características
 
@@ -222,6 +243,8 @@ Scheduling is not a HomeKit accessory feature — it must be configured through 
 - Persiana: abrir/cerrar/parar, posición 0–100%, estado de movimiento
 - Puerta de garaje: lógica de relé de pulso (turn_on → 2s → turn_off)
 - Sensor: valores numéricos de solo lectura (potencia, energía, temperatura, etc.) — utilizables en automatizaciones HomeKit
+- Pulsador (`pulse`): interruptor momentáneo — envía `turn_on` y luego `turn_off` automáticamente tras `pulseTime` ms. Útil para timbres, relés de pulso, etc.
+- Botón (`button`): interruptor sin estado — dispara automatizaciones HomeKit al pulsar. Sin estado, sin necesidad de entidad HA.
 - Formulario automático en Config UI X
 
 ### Instalación
@@ -285,6 +308,21 @@ Ejemplo completo con todos los tipos de dispositivo:
         "openingTime": 15,
         "closingTime": 15,
         "pulseTime": 2000
+      },
+      {
+        "name": "Timbre",
+        "deviceType": "pulse",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "switch.rele_timbre",
+        "pulseTime": 500
+      },
+      {
+        "name": "Botón Escena",
+        "deviceType": "button",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "input_boolean.dummy"
       },
       {
         "name": "Consumo eléctrico",

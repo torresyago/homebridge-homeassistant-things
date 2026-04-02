@@ -33,7 +33,9 @@
                 { "title": "Thermostat (climate entity)", "enum": ["thermostat"] },
                 { "title": "Blind / Shutter (cover entity)", "enum": ["blind"] },
                 { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] },
-                { "title": "Sensor (read-only numeric, e.g. power/energy)", "enum": ["sensor"] }
+                { "title": "Sensor (read-only numeric, e.g. power/energy)", "enum": ["sensor"] },
+                { "title": "Pulse (momentary switch — auto turn_off after pulseTime)", "enum": ["pulse"] },
+                { "title": "Button (stateless — triggers HomeKit automations)", "enum": ["button"] }
               ]
             },
             "haUrl": {

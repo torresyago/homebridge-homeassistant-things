@@ -114,6 +114,8 @@ class ThingHandler {
       case 'blind':      this._setupBlind();      break;
       case 'garageDoor': this._setupGarageDoor(); break;
       case 'sensor':     this._setupSensor();     break;
+      case 'pulse':      this._setupPulse();      break;
+      case 'button':     this._setupButton();     break;
       default:           this._setupSwitch();
     }
   }
@@ -279,6 +281,41 @@ class ThingHandler {
     }
   }
 
+  // ─── PULSE (momentary switch — turn_on then auto turn_off) ──────────────
+
+  _setupPulse() {
+    const { Service, Characteristic } = this.hap;
+    this.state.on = false;
+
+    this.service = this.accessory.getService(Service.Switch)
+      || this.accessory.addService(Service.Switch, this.name);
+
+    this.service.getCharacteristic(Characteristic.On)
+      .onGet(() => false)
+      .onSet((value) => {
+        if (!value) return;
+        this.log.info(`[${this.name}] Pulse: turn_on → wait ${this.pulseTime}ms → turn_off`);
+        this._sendCommand('switch', 'turn_on', {});
+        setTimeout(() => {
+          this._sendCommand('switch', 'turn_off', {});
+          this.service.updateCharacteristic(Characteristic.On, false);
+        }, this.pulseTime);
+      });
+  }
+
+  // ─── BUTTON (stateless programmable switch — triggers HomeKit automations) ─
+
+  _setupButton() {
+    const { Service, Characteristic } = this.hap;
+
+    this.service = this.accessory.getService(Service.StatelessProgrammableSwitch)
+      || this.accessory.addService(Service.StatelessProgrammableSwitch, this.name);
+
+    // Only expose single press
+    this.service.getCharacteristic(Characteristic.ProgrammableSwitchEvent)
+      .setProps({ validValues: [Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS] });
+  }
+
   // ─── SENSOR (read-only numeric, e.g. power/energy) ───────────────────────
 
   _setupSensor() {
@@ -296,6 +333,8 @@ class ThingHandler {
 
   async _pollHA() {
     if (this.deviceType === 'garageDoor') return;
+    if (this.deviceType === 'pulse')      return;
+    if (this.deviceType === 'button')     return;
     if (this.deviceType === 'sensor') { await this._pollSensor(); return; }
 
     try {
