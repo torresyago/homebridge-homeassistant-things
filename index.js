@@ -44,6 +44,17 @@ class HomeAssistantThingsPlatform {
       }];
     }
 
+    // Apply platform-level defaults for haUrl and haToken
+    const defaultHaUrl   = this.config.haUrl;
+    const defaultHaToken = this.config.haToken;
+    if (defaultHaUrl || defaultHaToken) {
+      devices = devices.map(d => ({
+        haUrl:   defaultHaUrl,
+        haToken: defaultHaToken,
+        ...d,
+      }));
+    }
+
     const configuredUUIDs = new Set();
 
     for (const deviceConfig of devices) {

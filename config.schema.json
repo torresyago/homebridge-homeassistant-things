@@ -10,13 +10,24 @@
         "type": "string",
         "default": "HA Things"
       },
+      "haUrl": {
+        "title": "Default Home Assistant URL",
+        "type": "string",
+        "placeholder": "http://homeassistant.local:8123",
+        "description": "Default HA URL for all devices. Can be overridden per device."
+      },
+      "haToken": {
+        "title": "Default Long-Lived Access Token",
+        "type": "string",
+        "description": "Default HA token for all devices. Can be overridden per device."
+      },
       "devices": {
         "title": "Devices",
         "type": "array",
         "items": {
           "title": "Device",
           "type": "object",
-          "required": ["name", "deviceType", "haUrl", "entityId", "haToken"],
+          "required": ["name", "deviceType", "entityId"],
           "properties": {
             "name": {
               "title": "Name",

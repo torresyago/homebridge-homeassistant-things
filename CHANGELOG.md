@@ -10,6 +10,14 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.3.0] - 2026-04-02
+
+### Added / Añadido
+- **EN** Platform-level `haUrl` and `haToken` defaults — set them once at platform level and all devices inherit them. Individual devices can still override with their own values.
+- **ES** Valores por defecto de `haUrl` y `haToken` a nivel de plataforma — se configuran una vez y todos los dispositivos los heredan. Cada dispositivo puede sobrescribirlos con sus propios valores si es necesario.
+
+---
+
 ## [2.2.0] - 2026-04-02
 
 ### Added / Añadido
