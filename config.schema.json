@@ -4,17 +4,16 @@
   "singular": false,
   "schema": {
     "type": "object",
+    "required": ["name", "deviceType", "haUrl", "entityId", "haToken"],
     "properties": {
       "name": {
         "title": "Name",
         "type": "string",
-        "required": true,
         "default": "My Device"
       },
       "deviceType": {
         "title": "Device Type",
         "type": "string",
-        "required": true,
         "default": "switch",
         "oneOf": [
           { "title": "Switch / Light", "enum": ["switch"] },
@@ -26,20 +25,17 @@
       "haUrl": {
         "title": "Home Assistant URL",
         "type": "string",
-        "required": true,
         "placeholder": "http://homeassistant.local:8123"
       },
       "entityId": {
         "title": "Entity ID",
         "type": "string",
-        "required": true,
         "description": "switch.salon · light.bedroom · climate.salon · cover.persiana · switch.relay",
         "placeholder": "switch.salon"
       },
       "haToken": {
         "title": "Long-Lived Access Token",
-        "type": "string",
-        "required": true
+        "type": "string"
       },
       "pollInterval": {
         "title": "Poll Interval (seconds)",

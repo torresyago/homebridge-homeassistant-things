@@ -10,6 +10,14 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [1.1.5] - 2026-04-01
+
+### Fixed / Corregido
+- **EN** Fixed invalid `config.schema.json`: removed `"required": true` from individual fields and replaced with a `"required": [...]` array at the object level.
+- **ES** Corregido `config.schema.json` inválido: eliminado `"required": true` de los campos individuales y reemplazado por un array `"required": [...]` a nivel de objeto.
+
+---
+
 ## [1.1.4] - 2026-04-01
 
 ### Fixed / Corregido
