@@ -71,12 +71,13 @@ Desde v2.0.0 el plugin es una **dynamic platform**. Mueve la config del bloque `
 
 ### Supported device types
 
-| `deviceType`  | HomeKit service   | HA entity domain | Sync |
-|---------------|-------------------|------------------|------|
-| `switch`      | Switch            | `switch`, `light`, `input_boolean` | Bidirectional |
-| `thermostat`  | Thermostat        | `climate`        | Bidirectional |
-| `blind`       | Window Covering   | `cover`          | Bidirectional |
+| `deviceType`  | HomeKit service    | HA entity domain | Sync |
+|---------------|--------------------|------------------|------|
+| `switch`      | Switch             | `switch`, `light`, `input_boolean` | Bidirectional |
+| `thermostat`  | Thermostat         | `climate`        | Bidirectional |
+| `blind`       | Window Covering    | `cover`          | Bidirectional |
 | `garageDoor`  | Garage Door Opener | `switch` (pulse relay) | One-way |
+| `sensor`      | Light Sensor       | `sensor` (any numeric) | Read-only |
 
 ### Features
 
@@ -85,6 +86,7 @@ Desde v2.0.0 el plugin es una **dynamic platform**. Mueve la config del bloque `
 - Thermostat: current temperature, target temperature, heating/cooling mode
 - Blind: open/close/stop, position 0–100%, moving state
 - Garage door: pulse relay logic (turn_on → 2s → turn_off)
+- Sensor: read-only numeric values (power, energy, temperature, etc.) — usable in HomeKit automations
 - Config UI X form — no manual JSON editing required
 
 ### Installation
@@ -105,59 +107,82 @@ npm install -g homebridge-homeassistant-things
    - **Poll Interval**: seconds between sync (default `30`)
 3. Click **Save** and restart Homebridge
 
-### Manual config.json examples
+### Manual config.json example
 
-**Switch / Light**
+Full example with all device types:
+
 ```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Living Room Light",
-  "deviceType": "switch",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "light.living_room",
-  "pollInterval": 30
-}
+"platforms": [
+  {
+    "platform": "HomeAssistantThing",
+    "name": "HA Things",
+    "devices": [
+      {
+        "name": "Living Room Light",
+        "deviceType": "switch",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "light.living_room",
+        "pollInterval": 30
+      },
+      {
+        "name": "Living Room Heater",
+        "deviceType": "thermostat",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "climate.living_room",
+        "pollInterval": 30
+      },
+      {
+        "name": "Living Room Blind",
+        "deviceType": "blind",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "cover.living_room_blind",
+        "pollInterval": 15
+      },
+      {
+        "name": "Garage",
+        "deviceType": "garageDoor",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "switch.garage_relay",
+        "openingTime": 15,
+        "closingTime": 15,
+        "pulseTime": 2000
+      },
+      {
+        "name": "Power Consumption",
+        "deviceType": "sensor",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "sensor.power_consumption_w",
+        "pollInterval": 30
+      },
+      {
+        "name": "Solar Production",
+        "deviceType": "sensor",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "sensor.solar_production_w",
+        "pollInterval": 30
+      }
+    ]
+  }
+]
 ```
 
-**Thermostat**
-```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Living Room Heater",
-  "deviceType": "thermostat",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "climate.living_room",
-  "pollInterval": 30
-}
-```
+### Sensor type — power & energy monitoring
 
-**Blind / Shutter**
-```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Living Room Blind",
-  "deviceType": "blind",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "cover.living_room_blind",
-  "pollInterval": 15
-}
-```
+The `sensor` device type reads any numeric Home Assistant entity and exposes it as a HomeKit **Light Sensor** (`CurrentAmbientLightLevel`). This is the standard workaround since HomeKit has no native power/energy service.
 
-**Garage Door (pulse relay)**
-```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Garage",
-  "deviceType": "garageDoor",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "switch.garage_relay",
-  "pollInterval": 30
-}
-```
+- The numeric value from HA is passed directly (e.g. `1234` W → shows as `1234` in HomeKit)
+- Works with any `sensor.*` entity: power (W), energy (kWh), temperature, humidity, etc.
+- **Home.app** displays the value with a "lux" unit label — visually incorrect but fully functional for automations
+- **Eve app** displays the same value and supports history graphs
+- Use it in **HomeKit Automations** with numeric thresholds (e.g. "if Solar Production > 2000, turn on dishwasher")
+
+> **Note:** HomeKit's maximum for this characteristic is 100,000. Values above that will be clamped. For most home energy use cases (< 20 kW) this is not an issue.
 
 ### Getting a Home Assistant Long-Lived Access Token
 
@@ -182,6 +207,7 @@ Scheduling is not a HomeKit accessory feature — it must be configured through 
 | `thermostat`  | Termostato         | `climate`          | Bidireccional |
 | `blind`       | Persiana           | `cover`            | Bidireccional |
 | `garageDoor`  | Puerta de Garaje   | `switch` (relé pulso) | Unidireccional |
+| `sensor`      | Sensor de Luz      | `sensor` (cualquier numérico) | Solo lectura |
 
 ### Características
 
@@ -190,6 +216,7 @@ Scheduling is not a HomeKit accessory feature — it must be configured through 
 - Termostato: temperatura actual, temperatura objetivo, modo calefacción/refrigeración
 - Persiana: abrir/cerrar/parar, posición 0–100%, estado de movimiento
 - Puerta de garaje: lógica de relé de pulso (turn_on → 2s → turn_off)
+- Sensor: valores numéricos de solo lectura (potencia, energía, temperatura, etc.) — utilizables en automatizaciones HomeKit
 - Formulario automático en Config UI X
 
 ### Instalación
@@ -210,59 +237,82 @@ npm install -g homebridge-homeassistant-things
    - **Intervalo Poll**: segundos entre sincronizaciones (por defecto `30`)
 3. Haz clic en **Guardar** y reinicia Homebridge
 
-### Ejemplos de config.json manual
+### Ejemplo de config.json manual
 
-**Interruptor / Luz**
+Ejemplo completo con todos los tipos de dispositivo:
+
 ```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Luz Salón",
-  "deviceType": "switch",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "light.salon",
-  "pollInterval": 30
-}
+"platforms": [
+  {
+    "platform": "HomeAssistantThing",
+    "name": "HA Things",
+    "devices": [
+      {
+        "name": "Luz Salón",
+        "deviceType": "switch",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "light.salon",
+        "pollInterval": 30
+      },
+      {
+        "name": "Calefacción Salón",
+        "deviceType": "thermostat",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "climate.salon",
+        "pollInterval": 30
+      },
+      {
+        "name": "Persiana Salón",
+        "deviceType": "blind",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "cover.persiana_salon",
+        "pollInterval": 15
+      },
+      {
+        "name": "Garaje",
+        "deviceType": "garageDoor",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "switch.rele_garaje",
+        "openingTime": 15,
+        "closingTime": 15,
+        "pulseTime": 2000
+      },
+      {
+        "name": "Consumo eléctrico",
+        "deviceType": "sensor",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "sensor.consumo_watts",
+        "pollInterval": 30
+      },
+      {
+        "name": "Producción solar",
+        "deviceType": "sensor",
+        "haUrl": "http://homeassistant.local:8123",
+        "haToken": "eyJhbGciOiJIUzI1NiIs...",
+        "entityId": "sensor.produccion_solar_watts",
+        "pollInterval": 30
+      }
+    ]
+  }
+]
 ```
 
-**Termostato / Calefacción**
-```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Calefacción Salón",
-  "deviceType": "thermostat",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "climate.salon",
-  "pollInterval": 30
-}
-```
+### Tipo sensor — monitorización de potencia y energía
 
-**Persiana**
-```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Persiana Salón",
-  "deviceType": "blind",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "cover.persiana_salon",
-  "pollInterval": 15
-}
-```
+El tipo `sensor` lee cualquier entidad numérica de Home Assistant y la expone en HomeKit como **Sensor de Luz** (`CurrentAmbientLightLevel`). Es la solución estándar ya que HomeKit no tiene un servicio nativo de potencia o energía.
 
-**Puerta de garaje (relé pulso)**
-```json
-{
-  "accessory": "HomeAssistantThing",
-  "name": "Garaje",
-  "deviceType": "garageDoor",
-  "haUrl": "http://homeassistant.local:8123",
-  "haToken": "eyJhbGciOiJIUzI1NiIs...",
-  "entityId": "switch.rele_garaje",
-  "pollInterval": 30
-}
-```
+- El valor numérico de HA se pasa directamente (p.ej. `1234` W → aparece como `1234` en HomeKit)
+- Compatible con cualquier entidad `sensor.*`: potencia (W), energía (kWh), temperatura, humedad, etc.
+- **App Home** muestra el valor con la etiqueta de unidad "lux" — visualmente incorrecto pero funcional para automatizaciones
+- **App Eve** muestra el mismo valor y soporta gráficos de historial
+- Úsalo en **Automatizaciones HomeKit** con umbrales numéricos (p.ej. "si Producción solar > 2000, encender el lavavajillas")
+
+> **Nota:** El máximo de HomeKit para esta característica es 100.000. Valores superiores se recortarán. Para la mayoría de instalaciones domésticas (< 20 kW) no supone ningún problema.
 
 ### Nota sobre la programación horaria del termostato
 
