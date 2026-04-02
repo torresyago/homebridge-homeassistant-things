@@ -1,6 +1,6 @@
 {
   "name": "homebridge-homeassistant-things",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Homebridge plugin to control Home Assistant devices (switches, thermostats, blinds, garage doors) as native HomeKit accessories",
   "main": "index.js",
   "keywords": [
