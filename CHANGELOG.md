@@ -10,6 +10,14 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.0.1] - 2026-04-02
+
+### Added / Añadido
+- **EN** Plugin icon added (`icon.svg` — mdi:home-automation).
+- **ES** Icono del plugin añadido (`icon.svg` — mdi:home-automation).
+
+---
+
 ## [2.0.0] - 2026-04-02
 
 ### ⚠️ Breaking change / Cambio importante
