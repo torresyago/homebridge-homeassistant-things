@@ -10,6 +10,16 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.4.0] - 2026-04-04
+
+### Added / Añadido
+- **EN** Plugin officially **verified by Homebridge** ✅ — badge updated in README.
+- **EN** Added PayPal donate button (appears in Homebridge UI plugin tile).
+- **ES** Plugin **verificado oficialmente por Homebridge** ✅ — badge actualizado en el README.
+- **ES** Añadido botón de donación PayPal (aparece en la ficha del plugin en la UI de Homebridge).
+
+---
+
 ## [2.3.0] - 2026-04-02
 
 ### Added / Añadido
