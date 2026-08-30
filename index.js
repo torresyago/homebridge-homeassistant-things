@@ -380,8 +380,14 @@ class ThingHandler {
       }
 
       case 'thermostat': {
-        const curTemp  = parseFloat(attributes.current_temperature) ?? this.state.currentTemp;
-        const tgtTemp  = parseFloat(attributes.temperature)         ?? this.state.targetTemp;
+        let curTemp = parseFloat(attributes.current_temperature);
+        if (Number.isNaN(curTemp)) curTemp = parseFloat(state);
+        if (Number.isNaN(curTemp)) curTemp = this.state.currentTemp;
+
+        let tgtTemp = parseFloat(attributes.temperature);
+        if (Number.isNaN(tgtTemp)) tgtTemp = this.state.targetTemp;
+        tgtTemp = Math.min(35, Math.max(5, tgtTemp));
+
         const stateMap = { off: 0, heat: 1, cool: 2, auto: 3, heat_cool: 3 };
         const hstate   = stateMap[state] ?? 0;
 

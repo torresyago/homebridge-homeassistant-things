@@ -10,6 +10,14 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.4.1] - 2026-08-30
+
+### Fixed / Corregido
+- **EN** Fixed thermostat polling getting permanently stuck reporting `NaN` for current/target temperature when the configured entity had no `current_temperature`/`temperature` attributes (e.g. a plain `sensor.*` entity used as a `thermostat` device). Current temperature now falls back to the entity's raw state, and a bad reading no longer poisons future polls (it previously kept the last `NaN` as the fallback value forever).
+- **EN** Fixed a HomeKit characteristic warning when Home Assistant reports a target temperature outside the 5–35°C range accepted by the `TargetTemperature` characteristic (e.g. a thermostat set to a low setback temperature while off). The value is now clamped to the valid range instead of being rejected.
+- **ES** Corregido el polling del termostato, que se quedaba permanentemente mostrando `NaN` en la temperatura actual/objetivo cuando la entidad configurada no tenía atributos `current_temperature`/`temperature` (p. ej. una entidad `sensor.*` normal usada como dispositivo `thermostat`). Ahora la temperatura actual usa como respaldo el propio estado de la entidad, y una lectura inválida ya no contamina los polls siguientes (antes se quedaba usando ese `NaN` como valor de respaldo para siempre).
+- **ES** Corregido un aviso de HomeKit cuando Home Assistant reporta una temperatura objetivo fuera del rango 5–35°C admitido por el characteristic `TargetTemperature` (p. ej. un termostato con una temperatura de repliegue baja mientras está apagado). Ahora el valor se acota al rango válido en lugar de ser rechazado.
+
 ## [2.4.0] - 2026-04-04
 
 ### Added / Añadido
