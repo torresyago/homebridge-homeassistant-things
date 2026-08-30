@@ -10,6 +10,12 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.4.2] - 2026-08-30
+
+### Changed / Cambiado
+- **EN** CI now publishes to npm via OIDC Trusted Publishing instead of a static `NPM_TOKEN`. No functional changes to the plugin.
+- **ES** El CI ahora publica en npm mediante Trusted Publishing (OIDC) en lugar de un `NPM_TOKEN` estático. Sin cambios funcionales en el plugin.
+
 ## [2.4.1] - 2026-08-30
 
 ### Fixed / Corregido
