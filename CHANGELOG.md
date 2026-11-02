@@ -10,6 +10,16 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.5.0] - 2026-11-02
+
+### Added / Añadido
+- **EN** New `temperature` device type: exposes a read-only `sensor.*` temperature entity as a native HomeKit **Temperature Sensor** (°F values are converted to °C). Previously the only option was `thermostat`, which expects a `climate` entity and shows heating controls.
+- **ES** Nuevo tipo de dispositivo `temperature`: expone una entidad `sensor.*` de temperatura de solo lectura como **Sensor de Temperatura** nativo de HomeKit (los valores en °F se convierten a °C). Antes la única opción era `thermostat`, que espera una entidad `climate` y muestra controles de calefacción.
+
+### Fixed / Corregido
+- **EN** Changing a device's `deviceType` no longer leaves the old service on the cached accessory. The accessory UUID only depends on `name` + `entityId`, so a device first saved as `switch` (the form default) kept its Switch service after switching to another type and the Home app kept showing it as a switch/relay. Services that don't match the configured type are now removed on startup.
+- **ES** Cambiar el `deviceType` de un dispositivo ya no deja el servicio anterior en el accesorio cacheado. El UUID del accesorio solo depende de `name` + `entityId`, así que un dispositivo guardado primero como `switch` (el valor por defecto del formulario) conservaba su servicio Switch tras cambiar de tipo y la app Casa lo seguía mostrando como interruptor/relé. Ahora se eliminan al arrancar los servicios que no corresponden al tipo configurado.
+
 ## [2.4.2] - 2026-08-30
 
 ### Changed / Cambiado
