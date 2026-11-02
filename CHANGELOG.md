@@ -10,6 +10,13 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.5.1] - 2026-11-02
+
+### Fixed / Corregido
+- **EN** `temperature` devices now get their own accessory UUID and the HomeKit *Sensor* category, so the Home app adds them as a brand-new temperature sensor instead of reusing the tile (and switch icon) of a previous device with the same name and entity. The old cached accessory is removed automatically. Aliases `thermometer`, `termometro` and `temperatureSensor` are accepted. The first poll now runs at startup instead of after `pollInterval`.
+- **ES** Los dispositivos `temperature` tienen ahora su propio UUID de accesorio y la categoría *Sensor* de HomeKit, así que la app Casa los da de alta como sensor de temperatura nuevo en lugar de reutilizar la ficha (y el icono de interruptor) de un dispositivo anterior con el mismo nombre y entidad. El accesorio cacheado antiguo se elimina solo. Se aceptan los alias `thermometer`, `termometro` y `temperatureSensor`. El primer poll se hace al arrancar en vez de esperar a `pollInterval`.
+- **EN/ES** Note / Nota: if a temperature device was previously in a room, re-assign it in the Home app / si el dispositivo estaba en una habitación, vuelve a asignarlo en la app Casa.
+
 ## [2.5.0] - 2026-11-02
 
 ### Added / Añadido

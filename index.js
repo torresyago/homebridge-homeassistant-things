@@ -7,6 +7,21 @@ module.exports = (api) => {
   api.registerPlatform(PLUGIN_NAME, PLATFORM_NAME, HomeAssistantThingsPlatform);
 };
 
+const CATEGORY_BY_TYPE = {
+  temperature: 'SENSOR',
+  sensor:      'SENSOR',
+  thermostat:  'THERMOSTAT',
+  blind:       'WINDOW_COVERING',
+  garageDoor:  'GARAGE_DOOR_OPENER',
+};
+
+// Alias aceptados para el tipo sensor de temperatura
+function normalizeDeviceType(type) {
+  const t = String(type || 'switch').trim();
+  const aliases = ['temperature', 'temperaturesensor', 'temperature_sensor', 'thermometer', 'termometro', 'termómetro'];
+  return aliases.includes(t.toLowerCase()) ? 'temperature' : t;
+}
+
 class HomeAssistantThingsPlatform {
   constructor(log, config, api) {
     this.log         = log;
@@ -63,7 +78,15 @@ class HomeAssistantThingsPlatform {
         continue;
       }
 
-      const uuid = this.api.hap.uuid.generate(deviceConfig.name + deviceConfig.entityId);
+      deviceConfig.deviceType = normalizeDeviceType(deviceConfig.deviceType);
+
+      // Los sensores de temperatura usan un UUID propio: así HomeKit los da de
+      // alta como accesorio nuevo y no hereda el icono/tipo de un relé anterior
+      // con el mismo nombre y entidad.
+      const uuidSeed = deviceConfig.deviceType === 'temperature'
+        ? `${deviceConfig.name}${deviceConfig.entityId}:temperature`
+        : deviceConfig.name + deviceConfig.entityId;
+      const uuid = this.api.hap.uuid.generate(uuidSeed);
       configuredUUIDs.add(uuid);
 
       let accessory = this.accessories.get(uuid);
@@ -71,7 +94,11 @@ class HomeAssistantThingsPlatform {
         this.log.info(`[${deviceConfig.name}] Restoring cached accessory`);
       } else {
         this.log.info(`[${deviceConfig.name}] Adding new accessory`);
-        accessory = new this.api.platformAccessory(deviceConfig.name, uuid);
+        const category = CATEGORY_BY_TYPE[deviceConfig.deviceType];
+        accessory = new this.api.platformAccessory(
+          deviceConfig.name, uuid,
+          category !== undefined ? this.api.hap.Categories[category] : undefined,
+        );
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
         this.accessories.set(uuid, accessory);
       }
@@ -529,6 +556,7 @@ class ThingHandler {
   }
 
   _startPolling() {
+    this._pollHA();
     setInterval(() => this._pollHA(), this.pollInterval * 1000);
     this.log.info(`[${this.name}] Polling started (${this.pollInterval}s)`);
   }
