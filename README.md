@@ -79,6 +79,7 @@ Desde v2.0.0 el plugin es una **dynamic platform**. Mueve la config del bloque `
 | `blind`       | Window Covering    | `cover`          | Bidirectional |
 | `garageDoor`  | Garage Door Opener | `switch` (pulse relay) | One-way |
 | `sensor`      | Light Sensor       | `sensor` (any numeric) | Read-only |
+| `temperature` | Temperature Sensor | `sensor` (°C / °F) | Read-only |
 | `pulse`       | Switch (momentary) | `switch` (pulse relay) | One-way |
 | `button`      | Stateless Switch   | any (no state needed)  | One-way |
 
@@ -228,6 +229,7 @@ Scheduling is not a HomeKit accessory feature — it must be configured through 
 | `blind`       | Persiana           | `cover`            | Bidireccional |
 | `garageDoor`  | Puerta de Garaje   | `switch` (relé pulso) | Unidireccional |
 | `sensor`      | Sensor de Luz      | `sensor` (cualquier numérico) | Solo lectura |
+| `temperature` | Sensor de Temperatura | `sensor` (°C / °F) | Solo lectura |
 | `pulse`       | Interruptor (momentáneo) | `switch` (relé de pulso) | Unidireccional |
 | `button`      | Interruptor sin estado | cualquiera (sin estado)  | Unidireccional |
 

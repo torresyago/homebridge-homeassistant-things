@@ -119,15 +119,43 @@ class ThingHandler {
   }
 
   _setupService() {
+    this._removeStaleServices();
     switch (this.deviceType) {
       case 'switch':     this._setupSwitch();     break;
       case 'thermostat': this._setupThermostat(); break;
       case 'blind':      this._setupBlind();      break;
       case 'garageDoor': this._setupGarageDoor(); break;
       case 'sensor':     this._setupSensor();     break;
+      case 'temperature': this._setupTemperature(); break;
       case 'pulse':      this._setupPulse();      break;
       case 'button':     this._setupButton();     break;
       default:           this._setupSwitch();
+    }
+  }
+
+  // Un accesorio cacheado conserva los servicios de su tipo anterior (el UUID
+  // depende solo de name + entityId). Si el tipo cambia, HomeKit seguiría
+  // mostrando el servicio viejo (p. ej. Switch), así que se eliminan aquí.
+  _removeStaleServices() {
+    const { Service } = this.hap;
+    const serviceByType = {
+      switch:      Service.Switch,
+      thermostat:  Service.Thermostat,
+      blind:       Service.WindowCovering,
+      garageDoor:  Service.GarageDoorOpener,
+      sensor:      Service.LightSensor,
+      temperature: Service.TemperatureSensor,
+      pulse:       Service.Switch,
+      button:      Service.StatelessProgrammableSwitch,
+    };
+    const wanted = serviceByType[this.deviceType] || Service.Switch;
+    const managed = new Set(Object.values(serviceByType).map(s => s.UUID));
+
+    for (const service of [...this.accessory.services]) {
+      if (managed.has(service.UUID) && service.UUID !== wanted.UUID) {
+        this.log.info(`[${this.name}] Removing stale ${service.constructor.name || 'service'} from cached accessory`);
+        this.accessory.removeService(service);
+      }
     }
   }
 
@@ -340,6 +368,20 @@ class ThingHandler {
       .onGet(() => Math.max(0.0001, this.state.value));
   }
 
+  // ─── TEMPERATURE SENSOR (read-only, e.g. sensor.temperatura_salon) ──────
+
+  _setupTemperature() {
+    const { Service, Characteristic } = this.hap;
+    this.state.temperature = 20;
+
+    this.service = this.accessory.getService(Service.TemperatureSensor)
+      || this.accessory.addService(Service.TemperatureSensor, this.name);
+
+    this.service.getCharacteristic(Characteristic.CurrentTemperature)
+      .setProps({ minValue: -50, maxValue: 100 })
+      .onGet(() => this.state.temperature);
+  }
+
   // ─── POLLING & STATE SYNC ─────────────────────────────────────────────────
 
   async _pollHA() {
@@ -401,6 +443,23 @@ class ThingHandler {
         this.service.updateCharacteristic(Characteristic.CurrentHeatingCoolingState, hstate);
         this.service.updateCharacteristic(Characteristic.TargetHeatingCoolingState,  hstate);
         this.log.debug(`[${this.name}] Poll: thermostat = ${state} | cur:${curTemp}° tgt:${tgtTemp}°`);
+        break;
+      }
+
+      case 'temperature': {
+        let temp = parseFloat(state);
+        if (Number.isNaN(temp)) temp = parseFloat(attributes?.current_temperature);
+        if (Number.isNaN(temp)) temp = parseFloat(attributes?.temperature);
+        if (Number.isNaN(temp)) {
+          this.log.debug(`[${this.name}] Poll: temperature = ${state} (no numérico, se ignora)`);
+          break;
+        }
+        if (attributes?.unit_of_measurement === '°F') temp = (temp - 32) * 5 / 9;
+        temp = Math.min(100, Math.max(-50, Math.round(temp * 10) / 10));
+
+        this.state.temperature = temp;
+        this.service.updateCharacteristic(Characteristic.CurrentTemperature, temp);
+        this.log.debug(`[${this.name}] Poll: temperature = ${temp}°C`);
         break;
       }
 
