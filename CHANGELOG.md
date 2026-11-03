@@ -10,6 +10,12 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.6.0] - 2026-11-03
+
+### Added / Añadido
+- **EN** New `temperatureTile` device type: shows a `sensor.*` temperature as a read-only Thermostat tile, so it appears on the Home app's main screen (HomeKit never shows plain sensors as tiles). It is always *off* and its controls do nothing and send nothing to Home Assistant.
+- **ES** Nuevo tipo `temperatureTile`: muestra la temperatura de un `sensor.*` como una baldosa de termostato de solo lectura, para que aparezca en la pantalla principal de Casa (HomeKit nunca muestra los sensores como baldosa). Está siempre *apagado* y sus controles no hacen nada ni envían nada a Home Assistant.
+
 ## [2.5.1] - 2026-11-02
 
 ### Fixed / Corregido

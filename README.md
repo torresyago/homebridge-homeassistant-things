@@ -8,13 +8,15 @@ Homebridge plugin to control Home Assistant devices as native HomeKit accessorie
 
 ---
 
-## What's new in 2.5.1 / Novedades de la 2.5.1
+## What's new in 2.6.0 / Novedades de la 2.6.0
 
-- **EN** Temperature sensors (`temperature` type, aliases `thermometer` / `termometro`) are now added to HomeKit as a brand-new accessory with the *Sensor* category, so they show only the temperature and never as a switch/relay. The old cached accessory is removed automatically. The first reading happens at startup.
-- **ES** Los sensores de temperatura (tipo `temperature`, alias `thermometer` / `termometro`) se dan de alta en HomeKit como un accesorio nuevo con categoría *Sensor*: solo muestran la temperatura y nunca aparecen como interruptor/relé. El accesorio cacheado antiguo se elimina solo. La primera lectura se hace al arrancar.
+- **EN** New `temperatureTile` type: a temperature sensor shown as a read-only thermostat tile, visible on the Home app's main screen. Always off; its controls do nothing.
+- **ES** Nuevo tipo `temperatureTile`: un sensor de temperatura mostrado como baldosa de termostato de solo lectura, visible en la pantalla principal de Casa. Siempre apagado; sus controles no hacen nada.
+- **EN** 2.5.1: `temperature` sensors are added as a new HomeKit accessory with the *Sensor* category (never a switch/relay). Home shows them under *Climate* and inside their room.
+- **ES** 2.5.1: los sensores `temperature` se dan de alta como accesorio nuevo con categoría *Sensor* (nunca como relé). Casa los muestra en *Clima* y dentro de su habitación.
 
-> After updating, select **Temperature Sensor / Termómetro** as the device type and restart Homebridge. If the device was in a room, re-assign it in the Home app.  
-> Tras actualizar, elige el tipo **Temperature Sensor / Termómetro** y reinicia Homebridge. Si el dispositivo estaba en una habitación, vuelve a asignarlo en la app Casa.
+> Choose **Temperature Tile / Termómetro en baldosa** if you want it on the main screen, or **Temperature Sensor / Termómetro** for a plain sensor. Restart Homebridge and re-assign the room in the Home app.  
+> Elige **Temperature Tile / Termómetro en baldosa** si lo quieres en la pantalla principal, o **Temperature Sensor / Termómetro** para un sensor normal. Reinicia Homebridge y vuelve a asignar la habitación en Casa.
 
 Full history / Historial completo: [CHANGELOG.md](https://github.com/torresyago/homebridge-homeassistant-things/blob/main/CHANGELOG.md)
 
@@ -92,6 +94,7 @@ Desde v2.0.0 el plugin es una **dynamic platform**. Mueve la config del bloque `
 | `garageDoor`  | Garage Door Opener | `switch` (pulse relay) | One-way |
 | `sensor`      | Light Sensor       | `sensor` (any numeric) | Read-only |
 | `temperature` | Temperature Sensor | `sensor` (°C / °F) — aliases: `thermometer`, `termometro` | Read-only |
+| `temperatureTile` | Thermostat (read-only tile) | `sensor` (°C / °F) | Read-only |
 | `pulse`       | Switch (momentary) | `switch` (pulse relay) | One-way |
 | `button`      | Stateless Switch   | any (no state needed)  | One-way |
 
@@ -242,6 +245,7 @@ Scheduling is not a HomeKit accessory feature — it must be configured through 
 | `garageDoor`  | Puerta de Garaje   | `switch` (relé pulso) | Unidireccional |
 | `sensor`      | Sensor de Luz      | `sensor` (cualquier numérico) | Solo lectura |
 | `temperature` | Sensor de Temperatura | `sensor` (°C / °F) — alias: `thermometer`, `termometro` | Solo lectura |
+| `temperatureTile` | Termostato (baldosa solo lectura) | `sensor` (°C / °F) | Solo lectura |
 | `pulse`       | Interruptor (momentáneo) | `switch` (relé de pulso) | Unidireccional |
 | `button`      | Interruptor sin estado | cualquiera (sin estado)  | Unidireccional |
 
