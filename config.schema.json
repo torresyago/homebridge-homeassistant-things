@@ -46,6 +46,7 @@
                 { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] },
                 { "title": "Sensor (read-only numeric, e.g. power/energy)", "enum": ["sensor"] },
                 { "title": "Temperature Sensor / Termómetro (solo lectura, sensor.* en °C/°F)", "enum": ["temperature"] },
+                { "title": "Temperature Tile / Termómetro en baldosa (termostato solo lectura, visible en la pantalla principal)", "enum": ["temperatureTile"] },
                 { "title": "Pulse (momentary switch — auto turn_off after pulseTime)", "enum": ["pulse"] },
                 { "title": "Button (stateless — triggers HomeKit automations)", "enum": ["button"] }
               ]

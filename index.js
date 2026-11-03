@@ -9,6 +9,7 @@ module.exports = (api) => {
 
 const CATEGORY_BY_TYPE = {
   temperature: 'SENSOR',
+  temperatureTile: 'THERMOSTAT',
   sensor:      'SENSOR',
   thermostat:  'THERMOSTAT',
   blind:       'WINDOW_COVERING',
@@ -83,8 +84,9 @@ class HomeAssistantThingsPlatform {
       // Los sensores de temperatura usan un UUID propio: así HomeKit los da de
       // alta como accesorio nuevo y no hereda el icono/tipo de un relé anterior
       // con el mismo nombre y entidad.
-      const uuidSeed = deviceConfig.deviceType === 'temperature'
-        ? `${deviceConfig.name}${deviceConfig.entityId}:temperature`
+      const ownUuidTypes = ['temperature', 'temperatureTile'];
+      const uuidSeed = ownUuidTypes.includes(deviceConfig.deviceType)
+        ? `${deviceConfig.name}${deviceConfig.entityId}:${deviceConfig.deviceType}`
         : deviceConfig.name + deviceConfig.entityId;
       const uuid = this.api.hap.uuid.generate(uuidSeed);
       configuredUUIDs.add(uuid);
@@ -154,6 +156,7 @@ class ThingHandler {
       case 'garageDoor': this._setupGarageDoor(); break;
       case 'sensor':     this._setupSensor();     break;
       case 'temperature': this._setupTemperature(); break;
+      case 'temperatureTile': this._setupTemperatureTile(); break;
       case 'pulse':      this._setupPulse();      break;
       case 'button':     this._setupButton();     break;
       default:           this._setupSwitch();
@@ -172,6 +175,7 @@ class ThingHandler {
       garageDoor:  Service.GarageDoorOpener,
       sensor:      Service.LightSensor,
       temperature: Service.TemperatureSensor,
+      temperatureTile: Service.Thermostat,
       pulse:       Service.Switch,
       button:      Service.StatelessProgrammableSwitch,
     };
@@ -409,6 +413,58 @@ class ThingHandler {
       .onGet(() => this.state.temperature);
   }
 
+  // ─── TEMPERATURE TILE (termostato de solo lectura) ───────────────────────
+  // HomeKit no muestra los sensores como baldosa en la pantalla principal, pero
+  // sí los termostatos. Este tipo publica un Thermostat siempre apagado cuyos
+  // controles no hacen nada: solo sirve para ver la temperatura.
+
+  _setupTemperatureTile() {
+    const { Service, Characteristic } = this.hap;
+    const OFF = Characteristic.TargetHeatingCoolingState.OFF;
+    this.state.temperature = 20;
+
+    this.service = this.accessory.getService(Service.Thermostat)
+      || this.accessory.addService(Service.Thermostat, this.name);
+
+    this.service.getCharacteristic(Characteristic.CurrentTemperature)
+      .setProps({ minValue: -50, maxValue: 100 })
+      .onGet(() => this.state.temperature);
+
+    this.service.getCharacteristic(Characteristic.CurrentHeatingCoolingState)
+      .setProps({ validValues: [Characteristic.CurrentHeatingCoolingState.OFF] })
+      .onGet(() => Characteristic.CurrentHeatingCoolingState.OFF);
+
+    this.service.getCharacteristic(Characteristic.TargetHeatingCoolingState)
+      .setProps({ validValues: [OFF] })
+      .onGet(() => OFF)
+      .onSet(() => {
+        setTimeout(() => this.service.updateCharacteristic(Characteristic.TargetHeatingCoolingState, OFF), 100);
+      });
+
+    this.service.getCharacteristic(Characteristic.TargetTemperature)
+      .setProps({ minValue: 10, maxValue: 38, minStep: 0.1 })
+      .onGet(() => this._tileTarget())
+      .onSet(() => {
+        setTimeout(() => this.service.updateCharacteristic(Characteristic.TargetTemperature, this._tileTarget()), 100);
+      });
+
+    this.service.getCharacteristic(Characteristic.TemperatureDisplayUnits)
+      .onGet(() => Characteristic.TemperatureDisplayUnits.CELSIUS);
+  }
+
+  _tileTarget() {
+    return Math.min(38, Math.max(10, this.state.temperature));
+  }
+
+  _parseTemperature(state, attributes) {
+    let temp = parseFloat(state);
+    if (Number.isNaN(temp)) temp = parseFloat(attributes?.current_temperature);
+    if (Number.isNaN(temp)) temp = parseFloat(attributes?.temperature);
+    if (Number.isNaN(temp)) return null;
+    if (attributes?.unit_of_measurement === '°F') temp = (temp - 32) * 5 / 9;
+    return Math.min(100, Math.max(-50, Math.round(temp * 10) / 10));
+  }
+
   // ─── POLLING & STATE SYNC ─────────────────────────────────────────────────
 
   async _pollHA() {
@@ -473,19 +529,18 @@ class ThingHandler {
         break;
       }
 
-      case 'temperature': {
-        let temp = parseFloat(state);
-        if (Number.isNaN(temp)) temp = parseFloat(attributes?.current_temperature);
-        if (Number.isNaN(temp)) temp = parseFloat(attributes?.temperature);
-        if (Number.isNaN(temp)) {
+      case 'temperature':
+      case 'temperatureTile': {
+        const temp = this._parseTemperature(state, attributes);
+        if (temp === null) {
           this.log.debug(`[${this.name}] Poll: temperature = ${state} (no numérico, se ignora)`);
           break;
         }
-        if (attributes?.unit_of_measurement === '°F') temp = (temp - 32) * 5 / 9;
-        temp = Math.min(100, Math.max(-50, Math.round(temp * 10) / 10));
-
         this.state.temperature = temp;
         this.service.updateCharacteristic(Characteristic.CurrentTemperature, temp);
+        if (this.deviceType === 'temperatureTile') {
+          this.service.updateCharacteristic(Characteristic.TargetTemperature, this._tileTarget());
+        }
         this.log.debug(`[${this.name}] Poll: temperature = ${temp}°C`);
         break;
       }
