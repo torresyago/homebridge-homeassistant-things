@@ -8,6 +8,18 @@ Homebridge plugin to control Home Assistant devices as native HomeKit accessorie
 
 ---
 
+## What's new in 2.5.1 / Novedades de la 2.5.1
+
+- **EN** Temperature sensors (`temperature` type, aliases `thermometer` / `termometro`) are now added to HomeKit as a brand-new accessory with the *Sensor* category, so they show only the temperature and never as a switch/relay. The old cached accessory is removed automatically. The first reading happens at startup.
+- **ES** Los sensores de temperatura (tipo `temperature`, alias `thermometer` / `termometro`) se dan de alta en HomeKit como un accesorio nuevo con categoría *Sensor*: solo muestran la temperatura y nunca aparecen como interruptor/relé. El accesorio cacheado antiguo se elimina solo. La primera lectura se hace al arrancar.
+
+> After updating, select **Temperature Sensor / Termómetro** as the device type and restart Homebridge. If the device was in a room, re-assign it in the Home app.  
+> Tras actualizar, elige el tipo **Temperature Sensor / Termómetro** y reinicia Homebridge. Si el dispositivo estaba en una habitación, vuelve a asignarlo en la app Casa.
+
+Full history / Historial completo: [CHANGELOG.md](https://github.com/torresyago/homebridge-homeassistant-things/blob/main/CHANGELOG.md)
+
+---
+
 ## Migrating from v1.x / Migración desde v1.x
 
 From v2.0.0 the plugin is a **dynamic platform**. Move your config from `accessories` to `platforms`.
@@ -395,7 +407,7 @@ Desde v2.0.0 este plugin cambió de `accessory` a `platform`. Si Config UI X sig
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for version history.
+See [CHANGELOG.md](https://github.com/torresyago/homebridge-homeassistant-things/blob/main/CHANGELOG.md) for version history.
 
 ## License
 
