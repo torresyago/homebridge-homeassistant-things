@@ -8,6 +8,11 @@ Homebridge plugin to control Home Assistant devices as native HomeKit accessorie
 
 ---
 
+## What's new in 2.6.1 / Novedades de la 2.6.1
+
+- **EN** Power & energy: the `sensor` type (aliases `power`, `energy`, `consumo`, `potencia`) converts kW/MW to W and MWh to kWh, clamps values to HomeKit's 0–100,000 range and ignores `unavailable` readings. Home shows the number with a "lux" label.
+- **ES** Consumo de energía: el tipo `sensor` (alias `power`, `energy`, `consumo`, `potencia`) pasa kW/MW a W y MWh a kWh, limita el valor al rango de HomeKit (0–100.000) e ignora las lecturas `unavailable`. Casa muestra la cifra con la etiqueta "lux".
+
 ## What's new in 2.6.0 / Novedades de la 2.6.0
 
 - **EN** New `temperatureTile` type: a temperature sensor shown as a read-only thermostat tile, visible on the Home app's main screen. Always off; its controls do nothing.
@@ -213,6 +218,8 @@ Full example with all device types:
 The `sensor` device type reads any numeric Home Assistant entity and exposes it as a HomeKit **Light Sensor** (`CurrentAmbientLightLevel`). This is the standard workaround since HomeKit has no native power/energy service.
 
 - The numeric value from HA is passed directly (e.g. `1234` W → shows as `1234` in HomeKit)
+- Values in `kW`/`MW` are converted to W and `MWh` to kWh (e.g. `2.5` kW → `2500`); non-numeric states such as `unavailable` keep the last value
+- Aliases for `deviceType`: `power`, `energy`, `consumo`, `potencia`
 - Works with any `sensor.*` entity: power (W), energy (kWh), temperature, humidity, etc.
 - **Home.app** displays the value with a "lux" unit label — visually incorrect but fully functional for automations
 - **Eve app** displays the same value and supports history graphs
@@ -364,6 +371,8 @@ Ejemplo completo con todos los tipos de dispositivo:
 El tipo `sensor` lee cualquier entidad numérica de Home Assistant y la expone en HomeKit como **Sensor de Luz** (`CurrentAmbientLightLevel`). Es la solución estándar ya que HomeKit no tiene un servicio nativo de potencia o energía.
 
 - El valor numérico de HA se pasa directamente (p.ej. `1234` W → aparece como `1234` en HomeKit)
+- Los valores en `kW`/`MW` se pasan a W y los `MWh` a kWh (p.ej. `2.5` kW → `2500`); los estados no numéricos como `unavailable` mantienen el último valor
+- Alias de `deviceType`: `power`, `energy`, `consumo`, `potencia`
 - Compatible con cualquier entidad `sensor.*`: potencia (W), energía (kWh), temperatura, humedad, etc.
 - **App Home** muestra el valor con la etiqueta de unidad "lux" — visualmente incorrecto pero funcional para automatizaciones
 - **App Eve** muestra el mismo valor y soporta gráficos de historial

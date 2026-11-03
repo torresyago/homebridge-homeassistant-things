@@ -44,7 +44,7 @@
                 { "title": "Thermostat (climate entity)", "enum": ["thermostat"] },
                 { "title": "Blind / Shutter (cover entity)", "enum": ["blind"] },
                 { "title": "Garage Door (pulse relay)", "enum": ["garageDoor"] },
-                { "title": "Sensor (read-only numeric, e.g. power/energy)", "enum": ["sensor"] },
+                { "title": "Sensor / Consumo de energía (solo lectura, W o kWh; Casa lo muestra en lux)", "enum": ["sensor"] },
                 { "title": "Temperature Sensor / Termómetro (solo lectura, sensor.* en °C/°F)", "enum": ["temperature"] },
                 { "title": "Temperature Tile / Termómetro en baldosa (termostato solo lectura, visible en la pantalla principal)", "enum": ["temperatureTile"] },
                 { "title": "Pulse (momentary switch — auto turn_off after pulseTime)", "enum": ["pulse"] },
