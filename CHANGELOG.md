@@ -10,6 +10,12 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.6.1] - 2026-11-03
+
+### Changed / Cambiado
+- **EN** `sensor` type (power/energy): values in `kW`/`MW` are converted to W and `MWh` to kWh, and they are clamped to HomeKit's Light Sensor range (0.0001–100,000) instead of being rejected above 100,000. Non-numeric states (`unavailable`, `unknown`) are ignored and keep the last value. New aliases `power`, `energy`, `energia`, `consumo` and `potencia`.
+- **ES** Tipo `sensor` (potencia/energía): los valores en `kW`/`MW` se pasan a W y los `MWh` a kWh, y se limitan al rango del sensor de luz de HomeKit (0,0001–100.000) en lugar de rechazarse por encima de 100.000. Los estados no numéricos (`unavailable`, `unknown`) se ignoran y se mantiene el último valor. Nuevos alias `power`, `energy`, `energia`, `consumo` y `potencia`.
+
 ## [2.6.0] - 2026-11-03
 
 ### Added / Añadido

@@ -20,7 +20,26 @@ const CATEGORY_BY_TYPE = {
 function normalizeDeviceType(type) {
   const t = String(type || 'switch').trim();
   const aliases = ['temperature', 'temperaturesensor', 'temperature_sensor', 'thermometer', 'termometro', 'termómetro'];
-  return aliases.includes(t.toLowerCase()) ? 'temperature' : t;
+  if (aliases.includes(t.toLowerCase())) return 'temperature';
+  // Alias del tipo sensor para consumo / producción de energía
+  const sensorAliases = ['power', 'energy', 'energia', 'energía', 'consumo', 'potencia'];
+  if (sensorAliases.includes(t.toLowerCase())) return 'sensor';
+  return t;
+}
+
+// Valor de una entidad numérica para el sensor de luz (0,0001 – 100.000).
+// Las potencias en kW/MW se pasan a W y la energía en MWh a kWh, para que la
+// baldosa muestre siempre vatios o kWh.
+const SENSOR_MIN = 0.0001;
+const SENSOR_MAX = 100000;
+const UNIT_FACTOR = { kW: 1000, MW: 1000000, MWh: 1000 };
+
+function parseSensorValue(state, attributes) {
+  const raw = parseFloat(state);
+  if (Number.isNaN(raw)) return null;
+  const factor = UNIT_FACTOR[attributes?.unit_of_measurement] || 1;
+  const value = Math.round(raw * factor * 100) / 100;
+  return Math.min(SENSOR_MAX, Math.max(SENSOR_MIN, value));
 }
 
 class HomeAssistantThingsPlatform {
@@ -390,13 +409,13 @@ class ThingHandler {
 
   _setupSensor() {
     const { Service, Characteristic } = this.hap;
-    this.state.value = 0.0001; // LightSensor minimum
+    this.state.value = SENSOR_MIN; // mínimo del LightSensor
 
     this.service = this.accessory.getService(Service.LightSensor)
       || this.accessory.addService(Service.LightSensor, this.name);
 
     this.service.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
-      .onGet(() => Math.max(0.0001, this.state.value));
+      .onGet(() => this.state.value);
   }
 
   // ─── TEMPERATURE SENSOR (read-only, e.g. sensor.temperatura_salon) ──────
@@ -578,11 +597,15 @@ class ThingHandler {
       });
       if (!res.ok) { this.log.error(`[${this.name}] Poll error: ${res.status}`); return; }
       const data  = await res.json();
-      const raw   = parseFloat(data.state);
-      const value = isNaN(raw) ? this.state.value : Math.max(0.0001, raw);
+      const unit  = data.attributes?.unit_of_measurement ?? '';
+      const value = parseSensorValue(data.state, data.attributes);
+      if (value === null) {
+        this.log.debug(`[${this.name}] Poll: sensor = ${data.state} (no numérico, se ignora)`);
+        return;
+      }
       this.state.value = value;
       this.service.updateCharacteristic(Characteristic.CurrentAmbientLightLevel, value);
-      this.log.debug(`[${this.name}] Poll: sensor = ${value} (${data.attributes?.unit_of_measurement ?? ''})`);
+      this.log.debug(`[${this.name}] Poll: sensor = ${value} (HA: ${data.state} ${unit})`);
     } catch (e) {
       this.log.error(`[${this.name}] Poll error: ${e.message}`);
     }
