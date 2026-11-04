@@ -10,6 +10,12 @@ Todos los cambios relevantes de este proyecto se documentan aquí.
 
 ---
 
+## [2.6.2] - 2026-11-04
+
+### Fixed / Corregido
+- **EN** `sensor` devices (power/energy) now get their own accessory UUID, like `temperature`, so the Home app adds them as a brand-new Light Sensor instead of keeping the tile of a previous device with the same name and entity (e.g. a switch). The old cached accessory is removed automatically; re-assign the room in Home.
+- **ES** Los dispositivos `sensor` (potencia/energía) tienen ahora su propio UUID de accesorio, igual que `temperature`, así que Casa los da de alta como sensor de luz nuevo en lugar de conservar la ficha de un dispositivo anterior con el mismo nombre y entidad (p. ej. un relé). El accesorio cacheado antiguo se elimina solo; vuelve a asignar la habitación en Casa.
+
 ## [2.6.1] - 2026-11-03
 
 ### Changed / Cambiado
