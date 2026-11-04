@@ -8,6 +8,11 @@ Homebridge plugin to control Home Assistant devices as native HomeKit accessorie
 
 ---
 
+## What's new in 2.6.2 / Novedades de la 2.6.2
+
+- **EN** `sensor` devices are re-added to HomeKit as a new accessory (own UUID), so they show up in the Home app inside their room. Re-assign the room after updating.
+- **ES** Los dispositivos `sensor` se dan de alta en HomeKit como accesorio nuevo (UUID propio), así que aparecen en Casa dentro de su habitación. Vuelve a asignar la habitación tras actualizar.
+
 ## What's new in 2.6.1 / Novedades de la 2.6.1
 
 - **EN** Power & energy: the `sensor` type (aliases `power`, `energy`, `consumo`, `potencia`) converts kW/MW to W and MWh to kWh, clamps values to HomeKit's 0–100,000 range and ignores `unavailable` readings. Home shows the number with a "lux" label.

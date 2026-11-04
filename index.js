@@ -100,10 +100,10 @@ class HomeAssistantThingsPlatform {
 
       deviceConfig.deviceType = normalizeDeviceType(deviceConfig.deviceType);
 
-      // Los sensores de temperatura usan un UUID propio: así HomeKit los da de
+      // Los sensores (temperatura y consumo) usan un UUID propio: así HomeKit los da de
       // alta como accesorio nuevo y no hereda el icono/tipo de un relé anterior
       // con el mismo nombre y entidad.
-      const ownUuidTypes = ['temperature', 'temperatureTile'];
+      const ownUuidTypes = ['temperature', 'temperatureTile', 'sensor'];
       const uuidSeed = ownUuidTypes.includes(deviceConfig.deviceType)
         ? `${deviceConfig.name}${deviceConfig.entityId}:${deviceConfig.deviceType}`
         : deviceConfig.name + deviceConfig.entityId;
